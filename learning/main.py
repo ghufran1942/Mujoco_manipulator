@@ -45,14 +45,14 @@ def main():
     # actor = ActorNetwork([8],8)
 
     # replay_buffer = ReplayBuffer(8, [8], 8)
-    actor_learning_rate = 0.001
-    critic_learning_rate = 0.001
+    actor_learning_rate = 0.01
+    critic_learning_rate = 0.01
     batch_size = 128
     layer_1_size = 256
     layer_2_size = 128
     tau = 0.005
 
-    print(type(env.action_space.shape[0]))
+    # print(type(env.action_space.shape[0]))
 
     agent = Agent(actor_learning_rate=actor_learning_rate, critic_learning_rate=critic_learning_rate, tau=tau, input_dims=env.observation_space.shape, env=env, n_actions=env.action_space.shape[0], layer_1_size=layer_1_size, layer_2_size=layer_2_size, batch_size=batch_size)
 
@@ -61,7 +61,7 @@ def main():
     best_score = 0
     episode_identifier = f"0 - actor_learning_rate: {actor_learning_rate}, critic_learning_rate: {critic_learning_rate}, batch_size: {batch_size}, layer_1_size: {layer_1_size}, layer_2_size: {layer_2_size}"
 
-    agent.load_model()
+    # agent.load_model()
 
     for i in range(n_games):
         observation, _ = env.reset()
@@ -76,14 +76,16 @@ def main():
             score += reward
             agent.remember(observation, action, reward, next_observation, done)
             agent.learn()
+            observation = next_observation
 
         writer.add_scalar(f"Score - {episode_identifier}", score, global_step=i)
 
-        if i % 100:
+        if (i % 10 == 0):
             agent.save_model()
-
         print(f"Episode {i}: Score {score}")
 
 
 if __name__ == "__main__":
+    if not os.path.exists("tmp/td3"):
+        os.makedirs("tmp/td3")
     main()

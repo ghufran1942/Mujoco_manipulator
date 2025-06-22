@@ -31,7 +31,7 @@ class CriticNetwork(nn.Module): # initialize the Critic Network
 
         self.device = T.device('cuda:0' if T.cuda.is_available() else 'cpu') # device to use for training, for mac it is 'cpu' and for laptop it should be cuda:0
 
-        print(f"Critic network initialized on device: {self.device}") # print the device the network is initialized on
+        print(f"{self.name} network initialized on device: {self.device}") # print the device the network is initialized on
 
         self.to(self.device) # move the network to the device
 
@@ -72,7 +72,7 @@ class ActorNetwork(nn.Module):
 
         self.device = T.device('cuda:0' if T.cuda.is_available() else 'cpu') # device to use for training, for mac it is 'cpu' and for laptop it should be cuda:0
 
-        print(f"Actor network initialized on device: {self.device}") # print the device the network is initialized on
+        print(f"{self.name} network initialized on device: {self.device}") # print the device the network is initialized on
 
         self.to(self.device) # move the network to the device
 

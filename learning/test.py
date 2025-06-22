@@ -11,6 +11,8 @@ from robosuite.controllers import load_part_controller_config
 from robosuite.controllers.composite.composite_controller_factory import refactor_composite_controller_config
 from robosuite.wrappers import GymWrapper
 
+from networks import Agent
+
 if __name__ == "__main__":
     env_name = "Door"
     robots = ["Panda"]
@@ -37,3 +39,37 @@ if __name__ == "__main__":
     )
 
     env = GymWrapper(env)
+
+    actor_learning_rate = 0.001
+    critic_learning_rate = 0.001
+    batch_size = 128
+    layer_1_size = 256
+    layer_2_size = 128
+    tau = 0.005
+
+    # print(type(env.action_space.shape[0]))
+
+    agent = Agent(actor_learning_rate=actor_learning_rate, critic_learning_rate=critic_learning_rate, tau=tau, input_dims=env.observation_space.shape, env=env, n_actions=env.action_space.shape[0], layer_1_size=layer_1_size, layer_2_size=layer_2_size, batch_size=batch_size)
+
+    n_games = 3
+    best_score = 0
+    episode_identifier = f"0 - actor_learning_rate: {actor_learning_rate}, critic_learning_rate: {critic_learning_rate}, batch_size: {batch_size}, layer_1_size: {layer_1_size}, layer_2_size: {layer_2_size}"
+
+    agent.load_model()
+
+    for i in range(n_games):
+        observation, _ = env.reset()
+        done = False
+        score = 0
+
+        while not done:
+            action = agent.choose_action(observation, validation=True)
+            # print(f"Environment Step: {env.step(action)}")
+            next_observation, reward, terminated, truncated, info = env.step(action)
+            done = terminated or truncated
+            env.render()
+            score += reward
+            observation = next_observation
+            time.sleep(0.03)
+
+        print(f"Episode {i}: Score {score}")

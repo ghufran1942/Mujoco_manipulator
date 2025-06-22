@@ -15,6 +15,7 @@ from robosuite.controllers.composite.composite_controller_factory import refacto
 
 from networks import CriticNetwork, ActorNetwork, Agent
 from buffer import ReplayBuffer
+from pkg_resources import Environment
 
 def main():
     env_name = "Door"
@@ -51,6 +52,8 @@ def main():
     layer_2_size = 128
     tau = 0.005
 
+    print(type(env.action_space.shape[0]))
+
     agent = Agent(actor_learning_rate=actor_learning_rate, critic_learning_rate=critic_learning_rate, tau=tau, input_dims=env.observation_space.shape, env=env, n_actions=env.action_space.shape[0], layer_1_size=layer_1_size, layer_2_size=layer_2_size, batch_size=batch_size)
 
     writer = SummaryWriter('logs')
@@ -61,13 +64,15 @@ def main():
     agent.load_model()
 
     for i in range(n_games):
-        observation = env.reset()
+        observation, _ = env.reset()
         done = False
         score = 0
 
         while not done:
             action = agent.choose_action(observation)
-            next_observation, reward, done, info = env.step(action)
+            # print(f"Environment Step: {env.step(action)}")
+            next_observation, reward, terminated, truncated, info = env.step(action)
+            done = terminated or truncated
             score += reward
             agent.remember(observation, action, reward, next_observation, done)
             agent.learn()

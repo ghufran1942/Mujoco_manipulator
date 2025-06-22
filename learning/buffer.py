@@ -9,12 +9,14 @@ class ReplayBuffer():
         self.state_memory = np.zeros((self.mem_size, *input_shape)) # Initialize the state memory to store the states of the environment\
         self.next_state_memory = np.zeros((self.mem_size, *input_shape)) # Initialize the new state memory to store the next states of the environment
         print(f"Initialized ReplayBuffer with max_size={self.mem_size}, input_shape={input_shape}, n_actions={n_actions}")
-        self.action_memory = np.zeros(self.mem_size, n_actions)
+        # print(f"Inside Buffer: n_actions type={type(n_actions)}")
+        self.action_memory = np.zeros((self.mem_size, n_actions))
         self.reward_memory = np.zeros(self.mem_size)
         self.terminal_memory = np.zeros(self.mem_size, dtype=bool)
 
     def store_transition(self, state, action, reward, next_state, done):
         index = self.mem_counter % self.mem_size
+        print(f"Inside Buffer: index={index}")
 
         self.state_memory[index] = state
         self.action_memory[index] = action

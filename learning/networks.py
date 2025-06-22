@@ -64,8 +64,8 @@ class ActorNetwork(nn.Module):
         self.checkpoint_dir = checkpoint_dir # directory to save checkpoints
         self.checkpoint_file = os.path.join(self.checkpoint_dir, self.name + "_td3")
 
-        self.fc1_dims = nn.Linear(*self.input_dims, self.fc1_dims)
-        self.fc2_dims = nn.Linear(self.fc1_dims, self.fc2_dims)
+        self.fc1 = nn.Linear(*self.input_dims, self.fc1_dims)
+        self.fc2 = nn.Linear(self.fc1_dims, self.fc2_dims)
         self.action = nn.Linear(self.fc2_dims, self.n_actions)
 
         self.optimizer = optim.Adam(self.parameters(), lr=learning_rate)
@@ -83,7 +83,7 @@ class ActorNetwork(nn.Module):
         x = self.fc2(x) # Apply second fully connected layer
         x = F.relu(x) # Apply ReLU activation function to the output of the second fully connected layer
 
-        x = T.tanh(self.output(x))
+        x = T.tanh(self.action(x))
 
         return x
 
@@ -266,7 +266,7 @@ class Agent():
         self.critic_2.save_checkpoint()
         self.target_actor.save_checkpoint()
         self.target_critic_1.save_checkpoint()
-        self.target_critic_1.save_checkpoint()
+        self.target_critic_2.save_checkpoint()
         print("Saved all the models")
 
 
@@ -277,7 +277,7 @@ class Agent():
             self.critic_2.load_checkpoint()
             self.target_actor.load_checkpoint()
             self.target_critic_1.load_checkpoint()
-            self.target_critic_1.load_checkpoint()
+            self.target_critic_2.load_checkpoint()
             print("Sucessfully loaded all the models")
         except:
             print("Failed to laod models. Starting from Scratch ")

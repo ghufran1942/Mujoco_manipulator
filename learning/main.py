@@ -18,6 +18,22 @@ from buffer import ReplayBuffer
 from pkg_resources import Environment
 
 def main():
+    """
+    This is the main function that sets up the Robosuite environment,
+    defines the agent, and runs the training loop.
+
+    You can modify the following variables to experiment with different settings:
+        - env_name: The name of the Robosuite environment to use.
+        - robots: The robot(s) to use in the environment.
+        - controller: The type of controller to use for the robot(s).
+        - actor_learning_rate: The learning rate for the actor network.
+        - critic_learning_rate: The learning rate for the critic network.
+        - batch_size: The batch size for training.
+        - layer_1_size: The size of the first hidden layer in the actor and critic networks.
+        - layer_2_size: The size of the second hidden layer in the actor and critic networks.
+        - tau: The soft update coefficient for the target networks.
+        - n_games: The number of training episodes to run.
+    """
     env_name = "Door"
     robots = ["Panda"]
     controller = "JOINT_VELOCITY"
@@ -41,10 +57,6 @@ def main():
 
     env = GymWrapper(env)
 
-    # critic = CriticNetwork([8],8)
-    # actor = ActorNetwork([8],8)
-
-    # replay_buffer = ReplayBuffer(8, [8], 8)
     actor_learning_rate = 0.01
     critic_learning_rate = 0.01
     batch_size = 128

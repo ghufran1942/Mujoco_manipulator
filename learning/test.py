@@ -14,6 +14,36 @@ from robosuite.wrappers import GymWrapper
 from networks import Agent
 
 if __name__ == "__main__":
+    """
+    This script demonstrates the usage of the robosuite library with a DDPG agent for reinforcement learning.
+    It sets up a robosuite environment (Door), configures a DDPG agent with specified hyperparameters,
+    and runs a training loop for a specified number of episodes. The script also includes options
+    for loading a pre-trained model and rendering the environment during training.
+
+    The script utilizes the following libraries:
+        - time: For pausing execution to control rendering speed.
+        - os: For interacting with the operating system (not explicitly used in the provided snippet, but often used for file management).
+        - numpy: For numerical operations and handling arrays.
+        - gymnasium: For defining the environment interface.
+        - torch.utils.tensorboard: For logging training progress and metrics.
+        - robosuite: The core library for creating and interacting with robotic environments.
+        - robosuite.controllers: For defining robot control schemes.
+        - robosuite.wrappers: For wrapping robosuite environments to conform to the Gymnasium interface.
+
+    The script performs the following steps:
+        1. Sets up the robosuite environment (Door with a Panda robot).
+        2. Configures the robot controller (JOINT_VELOCITY).
+        3. Wraps the robosuite environment with a Gymnasium wrapper.
+        4. Initializes a DDPG agent with specified hyperparameters (learning rates, batch size, layer sizes, tau).
+        5. Optionally loads a pre-trained model.
+        6. Runs a training loop for a specified number of episodes:
+            - Resets the environment at the beginning of each episode.
+            - Chooses an action based on the current observation using the agent's policy.
+            - Executes the action in the environment.
+            - Renders the environment (if enabled).
+            - Calculates the reward and updates the agent's policy and critic.
+            - Prints the episode score.
+    """
     env_name = "Door"
     robots = ["Panda"]
     controller = "JOINT_VELOCITY"

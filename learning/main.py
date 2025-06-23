@@ -1,11 +1,9 @@
-from urllib.parse import uses_query
 import time
 import os
 
 import numpy as np
 import gymnasium as gym
 
-from torch.nn.modules import batchnorm
 from torch.utils.tensorboard import SummaryWriter
 
 import robosuite as suite
@@ -13,9 +11,7 @@ from robosuite.wrappers import GymWrapper
 from robosuite.controllers import load_part_controller_config
 from robosuite.controllers.composite.composite_controller_factory import refactor_composite_controller_config
 
-from networks import CriticNetwork, ActorNetwork, Agent
-from buffer import ReplayBuffer
-from pkg_resources import Environment
+from networks import Agent
 
 def main():
     """
@@ -57,20 +53,20 @@ def main():
 
     env = GymWrapper(env)
 
-    actor_learning_rate = 0.01
-    critic_learning_rate = 0.01
+    actor_learning_rate = 0.001
+    critic_learning_rate = 0.001
     batch_size = 128
     layer_1_size = 256
     layer_2_size = 128
     tau = 0.005
 
-    # print(type(env.action_space.shape[0]))
+    print(env.action_space.shape[0])
 
     agent = Agent(actor_learning_rate=actor_learning_rate, critic_learning_rate=critic_learning_rate, tau=tau, input_dims=env.observation_space.shape, env=env, n_actions=env.action_space.shape[0], layer_1_size=layer_1_size, layer_2_size=layer_2_size, batch_size=batch_size)
 
     writer = SummaryWriter('logs')
-    n_games = 10000
-    best_score = 0
+    n_games = 5000
+    # best_score = 0
     episode_identifier = f"0 - actor_learning_rate: {actor_learning_rate}, critic_learning_rate: {critic_learning_rate}, batch_size: {batch_size}, layer_1_size: {layer_1_size}, layer_2_size: {layer_2_size}"
 
     # agent.load_model()

@@ -4,8 +4,6 @@ import os
 import numpy as np
 import gymnasium as gym
 
-from torch.utils.tensorboard import SummaryWriter
-
 import robosuite as suite
 from robosuite.controllers import load_part_controller_config
 from robosuite.controllers.composite.composite_controller_factory import refactor_composite_controller_config
@@ -57,7 +55,7 @@ if __name__ == "__main__":
     env = suite.make(
         env_name, # name of the environment to load
         robots, # list of robots to use in the environment
-        # controller_configs=composite_config, # method to control the robot's joints
+        controller_configs=composite_config, # method to control the robot's joints
         has_renderer=True, # whether to render the environment, True -> render, False -> no rendering
         use_camera_obs=False, # whether to use camera observations, True -> use camera observations (for CNN), False -> use joint observations
         horizon=300, # basically max duration for the robot to find the solution
@@ -77,7 +75,7 @@ if __name__ == "__main__":
     layer_2_size = 128
     tau = 0.005
 
-    # print(type(env.action_space.shape[0]))
+    print(env.action_space.shape[0])
 
     agent = Agent(actor_learning_rate=actor_learning_rate, critic_learning_rate=critic_learning_rate, tau=tau, input_dims=env.observation_space.shape, env=env, n_actions=env.action_space.shape[0], layer_1_size=layer_1_size, layer_2_size=layer_2_size, batch_size=batch_size)
 

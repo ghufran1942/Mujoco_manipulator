@@ -100,8 +100,16 @@ class CriticNetwork(nn.Module): # initialize the Critic Network
     def load_checkpoint(self):
         """
         Loads the checkpoint from the specified file.
+
+        Returns:
+            bool: True if the checkpoint was successfully loaded, False otherwise.
         """
-        self.load_state_dict(T.load(self.checkpoint_file))
+        if os.path.exists(self.checkpoint_file):
+            self.load_state_dict(T.load(self.checkpoint_file, map_location=self.device))
+            return True
+        else:
+            print(f"Checkpoint not found: {self.checkpoint_file}")
+            return False
 
 
 class ActorNetwork(nn.Module):
@@ -192,8 +200,16 @@ class ActorNetwork(nn.Module):
     def load_checkpoint(self):
         """
         Loads the checkpoint from the specified file.
+
+        Returns:
+            bool: True if the checkpoint was successfully loaded, False otherwise.
         """
-        self.load_state_dict(T.load(self.checkpoint_file))
+        if os.path.exists(self.checkpoint_file):
+            self.load_state_dict(T.load(self.checkpoint_file, map_location=self.device))
+            return True
+        else:
+            print(f"Checkpoint not found: {self.checkpoint_file}")
+            return False
 
 
 class Agent():
@@ -456,13 +472,16 @@ class Agent():
         It attempts to load the weights for the actor, critics, and target networks.
         If any of the loading operations fail, it prints an error message and continues training from scratch.
         """
-        try:
-            self.actor.load_checkpoint()
-            self.critic_1.load_checkpoint()
-            self.critic_2.load_checkpoint()
-            self.target_actor.load_checkpoint()
-            self.target_critic_1.load_checkpoint()
-            self.target_critic_2.load_checkpoint()
-            print("Sucessfully loaded all the models")
-        except:
-            print("Failed to laod models. Starting from Scratch ")
+        successes = [
+            self.actor.load_checkpoint(),
+            self.critic_1.load_checkpoint(),
+            self.critic_2.load_checkpoint(),
+            self.target_actor.load_checkpoint(),
+            self.target_critic_1.load_checkpoint(),
+            self.target_critic_2.load_checkpoint(),
+        ]
+
+        if all(successes):
+            print("Successfully loaded all the models")
+        else:
+            print("Failed to load models. Starting from scratch")

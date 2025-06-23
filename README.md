@@ -1,6 +1,6 @@
 # Mujoco Manipulator
 
-This repository provides a minimal example of training a robotic manipulator in the [Robosuite](https://robosuite.ai/) simulator. The agent uses a TD3 style algorithm implemented in PyTorch.
+This repository provides a minimal example of training a robotic manipulator in the [Robosuite](https://robosuite.ai/) simulator. The agent uses a TD3 algorithm implemented in PyTorch.
 
 ## Installation
 

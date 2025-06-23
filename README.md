@@ -15,15 +15,10 @@ pip install -r learning/requirements.txt
 To start training run:
 
 ```bash
-python learning/main.py
+python learning/main.py 
 ```
 
 Training logs are written to the `logs/` directory and model checkpoints are stored in `tmp/td3/`.
-If you are on **macOS**, use the MuJoCo provided `mjpython` interpreter when running any scripts or tests. For example:
-
-```bash
-mjpython learning/main.py
-```
 
 ## Evaluation
 
@@ -31,6 +26,12 @@ After training, visualize the learned policy by running:
 
 ```bash
 python learning/test.py
+```
+
+If you are on **macOS**, use the MuJoCo provided `mjpython` interpreter when running any scripts or tests. For example:
+
+```bash
+mjpython learning/main.py
 ```
 
 This will load the latest checkpoints and render the environment while the agent interacts with it.

@@ -65,11 +65,11 @@ def main():
     agent = Agent(actor_learning_rate=actor_learning_rate, critic_learning_rate=critic_learning_rate, tau=tau, input_dims=env.observation_space.shape, env=env, n_actions=env.action_space.shape[0], layer_1_size=layer_1_size, layer_2_size=layer_2_size, batch_size=batch_size)
 
     writer = SummaryWriter('logs')
-    n_games = 5000
+    n_games = 1000
     # best_score = 0
     episode_identifier = f"0 - actor_learning_rate: {actor_learning_rate}, critic_learning_rate: {critic_learning_rate}, batch_size: {batch_size}, layer_1_size: {layer_1_size}, layer_2_size: {layer_2_size}"
 
-    # agent.load_model()
+    agent.load_model()
 
     for i in range(n_games):
         observation, _ = env.reset()

@@ -3,6 +3,7 @@ import os
 
 import numpy as np
 import gymnasium as gym
+from gymnasium.utils.save_video import save_video
 
 import robosuite as suite
 from robosuite.controllers import load_part_controller_config
@@ -10,6 +11,16 @@ from robosuite.controllers.composite.composite_controller_factory import refacto
 from robosuite.wrappers import GymWrapper
 
 from networks import Agent
+
+import imageio
+
+"""
+Ensure you have imagemagick installed with
+sudo apt-get install imagemagick
+
+Open file in CLI with:
+xgd-open <filelname>
+"""
 
 if __name__ == "__main__":
     """
@@ -42,6 +53,7 @@ if __name__ == "__main__":
             - Calculates the reward and updates the agent's policy and critic.
             - Prints the episode score.
     """
+
     env_name = "Door"
     robots = ["Panda"]
     controller = "JOINT_VELOCITY"
@@ -75,6 +87,8 @@ if __name__ == "__main__":
     layer_2_size = 128
     tau = 0.005
 
+    skip_frames = 1
+
     print(env.action_space.shape[0])
 
     agent = Agent(actor_learning_rate=actor_learning_rate, critic_learning_rate=critic_learning_rate, tau=tau, input_dims=env.observation_space.shape, env=env, n_actions=env.action_space.shape[0], layer_1_size=layer_1_size, layer_2_size=layer_2_size, batch_size=batch_size)
@@ -87,6 +101,8 @@ if __name__ == "__main__":
 
     for i in range(n_games):
         observation, _ = env.reset()
+        writer = imageio.get_writer(f"video_test_episode_{i}.mp4", fps=20)
+        frames = []
         done = False
         score = 0
 
@@ -95,9 +111,15 @@ if __name__ == "__main__":
             # print(f"Environment Step: {env.step(action)}")
             next_observation, reward, terminated, truncated, info = env.step(action)
             done = terminated or truncated
-            env.render()
+            # env.render()
+            if i % skip_frames == 0:
+                print(next_observation)
+                frame = next_observation
+                writer.append_data(frame)
+                print("Saving frame #{}".format(i))
             score += reward
             observation = next_observation
             time.sleep(0.03)
 
+        writer.close()
         print(f"Episode {i}: Score {score}")

@@ -68,12 +68,12 @@ if __name__ == "__main__":
         env_name, # name of the environment to load
         robots, # list of robots to use in the environment
         controller_configs=composite_config, # method to control the robot's joints
-        has_renderer=True, # whether to render the environment, True -> render, False -> no rendering
+        has_renderer=False, # whether to render the environment, True -> render, False -> no rendering
         use_camera_obs=False, # whether to use camera observations, True -> use camera observations (for CNN), False -> use joint observations
         horizon=300, # basically max duration for the robot to find the solution
         # renderer="mjviewer",
         render_camera="frontview", # whether to render the environment, True -> render, False -> no rendering
-        has_offscreen_renderer=False, # whether to use offscreen rendering, True -> use offscreen rendering, False -> no offscreen rendering
+        has_offscreen_renderer=True, # whether to use offscreen rendering, True -> use offscreen rendering, False -> no offscreen rendering
         reward_shaping=True, # False -> only when the robot is successful, True -> partial reward
         control_freq=20 # frequency of control updates
     )
@@ -102,7 +102,7 @@ if __name__ == "__main__":
     for i in range(n_games):
         observation, _ = env.reset()
         writer = imageio.get_writer(f"video_test_episode_{i}.mp4", fps=20)
-        frames = []
+        frame_count = 0
         done = False
         score = 0
 
@@ -112,13 +112,15 @@ if __name__ == "__main__":
             next_observation, reward, terminated, truncated, info = env.step(action)
             done = terminated or truncated
             # env.render()
-            if i % skip_frames == 0:
-                print(next_observation)
-                frame = next_observation
+            if frame_count % skip_frames == 0:
+                frame = env.sim.render(width=640, height=480, camera_name="frontview")
+                frame = np.flipud(frame) # Flip the frame vertically
                 writer.append_data(frame)
-                print("Saving frame #{}".format(i))
+                # print(f"Saving frame #{frame_count}")
+                #
             score += reward
             observation = next_observation
+            frame_count += 1
             time.sleep(0.03)
 
         writer.close()
